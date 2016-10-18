@@ -16,9 +16,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SlackOutgoing(implicit mat: ActorMaterializer, s: ActorSystem, ec: ExecutionContext) {
   lazy val slackApiConnectionFlow: Flow[HttpRequest, HttpResponse, Any] = Http().outgoingConnectionHttps("slack.com")
-  def slackApiRequest(request: HttpRequest): Future[HttpResponse] = Source.single(request).via(slackApiConnectionFlow).runWith(Sink.head)
 
-  def futureResponse[A: RootJsonFormat]: (HttpResponse) => Future[Either[String, A]] = { response =>
+  protected def slackApiRequest(request: HttpRequest): Future[HttpResponse] = {
+    Source.single(request).via(slackApiConnectionFlow).runWith(Sink.head)
+  }
+
+  protected def futureResponse[A: RootJsonFormat]: (HttpResponse) => Future[Either[String, A]] = { response =>
     response.status match {
       case OK => Unmarshal(response.entity).to[A].map(Right(_))
       case BadRequest => Unmarshal(response.entity).to[String].flatMap { entity =>
