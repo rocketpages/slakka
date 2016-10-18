@@ -2,7 +2,8 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.ContentTypes._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import api.responses.AuthTestResponse
+import outbound.slack.responses.AuthTestResponse
+import inbound.SlackService
 import org.scalatest._
 
 class SlackSpec extends WordSpec with Matchers with ScalatestRouteTest {

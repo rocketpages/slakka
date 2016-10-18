@@ -1,10 +1,10 @@
-package api
+package outbound.slack
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.model.{HttpRequest, Uri}
 import akka.stream.ActorMaterializer
-import api.responses.AuthTestResponse
 import auth.Auth.Token
-import akka.http.scaladsl.model.{Uri, HttpRequest}
+import outbound.slack.responses.AuthTestResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -14,7 +14,6 @@ class AuthTest(implicit ec: ExecutionContext, mat: ActorMaterializer, s: ActorSy
     val req = HttpRequest().withUri(Uri("/api/auth.test").withQuery(Uri.Query(Map("token" -> token))))
     slackApiRequest(req).flatMap(futureResponse[AuthTestResponse])
   }
-
 
 }
 

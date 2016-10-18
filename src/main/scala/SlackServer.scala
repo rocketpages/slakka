@@ -1,6 +1,7 @@
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
+import inbound.SlackService
 import scala.concurrent.ExecutionContext
 
 class SlackServer(implicit s: ActorSystem, m: ActorMaterializer, ec: ExecutionContext) extends SlackService {

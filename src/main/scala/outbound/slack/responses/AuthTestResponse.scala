@@ -1,4 +1,4 @@
-package api.responses
+package outbound.slack.responses
 
 import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
