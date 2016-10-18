@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContext
 
 class SlackService(implicit s: ActorSystem, m: ActorMaterializer, ec: ExecutionContext) {
 
-  import api.Protocols._
+  import api.AuthTestResponse._
 
   val authApi = new AuthTest
 
