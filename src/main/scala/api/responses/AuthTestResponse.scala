@@ -1,6 +1,6 @@
-package api
+package api.responses
 
-import spray.json.{RootJsonFormat, DefaultJsonProtocol}
+import spray.json.{DefaultJsonProtocol, RootJsonFormat}
 
 case class AuthTestResponse(ok: Boolean, url: String, team: String, user: String, team_id: String, user_id: String)
 

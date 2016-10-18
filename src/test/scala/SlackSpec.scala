@@ -2,12 +2,12 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.ContentTypes._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import api.AuthTestResponse
+import api.responses.AuthTestResponse
 import org.scalatest._
 
 class SlackSpec extends WordSpec with Matchers with ScalatestRouteTest {
 
-  import api.AuthTestResponse._
+  import AuthTestResponse._
 
   val service = new SlackService
   val token = sys.env("SLACK_TOKEN")
