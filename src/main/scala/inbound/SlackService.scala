@@ -7,7 +7,7 @@ import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import outbound.slack.responses.AuthTestResponse
-import outbound.slack.AuthTest
+import outbound.slack.SlackConsumer
 
 import scala.concurrent.ExecutionContext
 
@@ -15,15 +15,30 @@ class SlackService(implicit s: ActorSystem, m: ActorMaterializer, ec: ExecutionC
 
   import AuthTestResponse._
 
-  val authApi = new AuthTest
+  val ws = new SlackConsumer
 
   val routes =
-    path("auth") {
-      get {
-        parameters('token) { token =>
+    pathPrefix("test") {
+      path("auth") {
+        get {
+          parameters('token) { token =>
+            complete {
+              ws.authTest(token).map[ToResponseMarshallable] {
+                case Right(authTestResponse) => authTestResponse
+                case Left(errorMessage) => {
+                  s.log.error(errorMessage)
+                  BadRequest -> errorMessage
+                }
+              }
+            }
+          }
+        }
+      } ~
+      path("api") {
+        get {
           complete {
-            authApi.authTest(token).map[ToResponseMarshallable] {
-              case Right(authTestResponse) => authTestResponse
+            ws.apiTest.map[ToResponseMarshallable] {
+              case Right(apiTestResponse) => apiTestResponse
               case Left(errorMessage) => {
                 s.log.error(errorMessage)
                 BadRequest -> errorMessage

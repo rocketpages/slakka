@@ -7,6 +7,3 @@ case class AuthTestResponse(ok: Boolean, url: String, team: String, user: String
 object AuthTestResponse extends DefaultJsonProtocol {
   implicit val authTestJson: RootJsonFormat[AuthTestResponse] = jsonFormat6(AuthTestResponse.apply)
 }
-
-
-
