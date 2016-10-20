@@ -25,9 +25,9 @@ class SlackConsumerCore(implicit mat: ActorMaterializer, s: ActorSystem, ec: Exe
     slackApiRequest(req).flatMap(futureResponse[T])
   }
 
-  private def futureResponse[A: RootJsonFormat]: (HttpResponse) => Future[Either[String, A]] = { response =>
+  private def futureResponse[T: RootJsonFormat]: (HttpResponse) => Future[Either[String, T]] = { response =>
     response.status match {
-      case OK => Unmarshal(response.entity).to[A].map(Right(_))
+      case OK => Unmarshal(response.entity).to[T].map(Right(_))
       case BadRequest => Unmarshal(response.entity).to[String].flatMap { entity =>
         val error = s"400 Bad Request with response: $entity"
         Future.successful(Left(error))
