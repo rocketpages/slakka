@@ -36,12 +36,14 @@ class SlackService(implicit s: ActorSystem, m: ActorMaterializer, ec: ExecutionC
       } ~
       path("api") {
         get {
-          complete {
-            ws.apiTest.map[ToResponseMarshallable] {
-              case Right(apiTestResponse) => apiTestResponse
-              case Left(errorMessage) => {
-                s.log.error(errorMessage)
-                BadRequest -> errorMessage
+          parameters('error.?, 'foo.?) { (error, foo) =>
+            complete {
+              ws.apiTest(error, foo).map[ToResponseMarshallable] {
+                case Right(apiTestResponse) => apiTestResponse
+                case Left(errorMessage) => {
+                  s.log.error(errorMessage)
+                  BadRequest -> errorMessage
+                }
               }
             }
           }

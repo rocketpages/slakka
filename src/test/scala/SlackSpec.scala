@@ -24,8 +24,28 @@ class SlackSpec extends WordSpec with Matchers with ScalatestRouteTest {
         }
       }
     }
-    "successfully test slack api.test endpoint" in {
-      Get(s"/test/api?token=${token}") ~> service.routes ~> check {
+    "successfully test slack api.test endpoint with no args" in {
+      Get(s"/test/api") ~> service.routes ~> check {
+        status shouldBe OK
+        contentType shouldBe `application/json`
+        responseAs[ApiTestResponse] match {
+          case ApiTestResponse(true, _, _) => assert(true)
+          case _ => assert(false)
+        }
+      }
+    }
+    "successfully test slack api.test endpoint with error" in {
+      Get(s"/test/api?error=error&foo=bar") ~> service.routes ~> check {
+        status shouldBe OK
+        contentType shouldBe `application/json`
+        responseAs[ApiTestResponse] match {
+          case ApiTestResponse(false, Some("error"), _) => assert(true)
+          case _ => assert(false)
+        }
+      }
+    }
+    "successfully test slack api.test endpoint with args" in {
+      Get(s"/test/api?foo=bar") ~> service.routes ~> check {
         status shouldBe OK
         contentType shouldBe `application/json`
         responseAs[ApiTestResponse] match {
