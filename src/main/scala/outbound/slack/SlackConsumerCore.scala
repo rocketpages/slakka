@@ -15,7 +15,9 @@ import spray.json.RootJsonFormat
 import scala.concurrent.{ExecutionContext, Future}
 
 class SlackConsumerCore(implicit mat: ActorMaterializer, s: ActorSystem, ec: ExecutionContext) {
-  private lazy val slackApiConnectionFlow: Flow[HttpRequest, HttpResponse, Any] = Http().outgoingConnectionHttps("slack.com")
+  private lazy val slackApiConnectionFlow: Flow[HttpRequest, HttpResponse, Any] = {
+    Http().outgoingConnectionHttps("slack.com").async
+  }
 
   protected def slackRequest[T: RootJsonFormat](uri: Uri, params: Option[Uri.Query] = None): Future[Either[String, T]] = {
     val req = params match {
