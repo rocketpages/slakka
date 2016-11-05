@@ -20,11 +20,14 @@ class SlackConsumerCore(implicit mat: ActorMaterializer, s: ActorSystem, ec: Exe
   }
 
   protected def slackRequest[T: RootJsonFormat](uri: Uri, params: Option[Uri.Query] = None): Future[Either[String, T]] = {
-    val req = params match {
+    slackApiRequest(buildRequest(uri, params)).flatMap(futureResponse[T])
+  }
+
+  private def buildRequest(uri: Uri, params: Option[Uri.Query]): HttpRequest = {
+    params match {
       case Some(p) => HttpRequest().withUri(uri.withQuery(p))
       case _ => HttpRequest().withUri(uri)
     }
-    slackApiRequest(req).flatMap(futureResponse[T])
   }
 
   private def futureResponse[T: RootJsonFormat]: (HttpResponse) => Future[Either[String, T]] = { response =>
